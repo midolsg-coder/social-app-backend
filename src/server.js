@@ -20,6 +20,8 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB подключена"))
   .catch(err => console.log(err));
 
-app.listen(5000, () => {
-  console.log('Сервер запущен на порту 5000');
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Сервер запущен на порту ${PORT}`);
 });
