@@ -1,16 +1,24 @@
 const express = require("express");
 const router = express.Router();
 
-const { register, login, getProfile } = require("../controllers/authController");
+const { register, login } = require("../controllers/authController");
 const authMiddleware = require("../middleware/authMiddleware");
+const User = require("../models/User");
 
-// ================= REGISTER =================
+// Регистрация
 router.post("/register", register);
 
-// ================= LOGIN =================
+// Логин
 router.post("/login", login);
 
-// ================= PROFILE (protected) =================
-router.get("/profile", authMiddleware, getProfile);
+// Профиль (защищённый маршрут)
+router.get("/profile", authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).select("-password");
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Ошибка сервера" });
+  }
+});
 
 module.exports = router;
