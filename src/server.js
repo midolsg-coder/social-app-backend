@@ -1,33 +1,33 @@
-require("dotenv").config();
-console.log("ENV:", process.env);
-const express = require('express');
-const mongoose = require('mongoose');
+const express = require("express");
+const mongoose = require("mongoose");
 const cors = require("cors");
-const authRoutes = require('./routes/authRoutes');
-const postRoutes = require("./routes/postRoutes");
+require("dotenv").config();
 
 const app = express();
 
+// ===== MIDDLEWARE =====
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
-
-// Подключаем маршруты
-app.use('/api/auth', authRoutes);
-app.use("/api/posts", postRoutes);
-app.use("/api/comments", require("./routes/commentRoutes"));
-
-// Подключение MongoDB
-console.log("MONGO_URI:", process.env.MONGO_URI);
+// ===== CONNECT MONGODB =====
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB подключена"))
+  .then(() => console.log("MongoDB подключен"))
   .catch(err => console.log(err));
 
+// ===== ROUTES =====
+app.use("/api", require("./routes/authRoutes"));
+app.use("/api", require("./routes/userRoutes"));
+app.use("/api", require("./routes/postRoutes"));
+app.use("/api", require("./routes/commentRoutes"));
+
+// ===== TEST ROUTE =====
+app.get("/", (req, res) => {
+  res.send("API работает 🚀");
+});
+
+// ===== START SERVER =====
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Сервер запущен на порту ${PORT}`);
+  console.log(Сервер запущен на порту ${PORT});
 });
